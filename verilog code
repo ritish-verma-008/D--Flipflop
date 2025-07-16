@@ -1,0 +1,50 @@
+module top(
+    input clk,
+    input d,
+    input sync_reset,
+    output [6:0] seg,
+    output [3:0] D1_AN
+);
+    wire q;
+
+    D_FF ff_inst (
+        .d(d),
+        .q(q),
+        .clk(clk),
+        .sync_reset(sync_reset)
+    );
+
+    seven_seg display_inst (
+        .q(q),
+        .seg(seg),
+        .D1_AN(D1_AN)
+    );
+endmodule
+
+
+module D_FF(d,q,clk,sync_reset);
+input d,clk,sync_reset;
+output reg q;
+
+always@(posedge clk) begin
+    if (sync_reset)
+        q <= 1'b0;
+    else 
+        q <= d;
+     end
+endmodule
+    
+module seven_seg(q,seg,D1_AN);
+input q;
+output reg [6:0] seg;
+output [3:0] D1_AN;
+assign D1_AN=4'b1110;
+always@(*) begin
+    case (q)
+    1'd0: seg = 7'b1000000;
+    1'd1: seg = 7'b1111001;
+    default : seg = 7'b1111111;
+    endcase
+    end
+endmodule
+        
